@@ -1,0 +1,261 @@
+{
+    "vnets": {
+        "value": [
+            {
+                "name": "aro-vnet",
+                "location": "North Europe",
+                "tags": {
+                    "Name": "vnet-test",
+                    "Team": "DevOps"
+                },
+                "addressprefix": "192.168.0.0/24",
+                "rg": "myrg"
+            }
+        ]
+    },
+    "subnets": {
+        "value": [
+              {
+                "name": "master-subnet",
+                "addressprefix": "192.168.1.0/24",
+                "rg": "myrg"
+              },
+              {
+                "name": "worker-subnet",
+                "addressprefix": "192.168.2.0/24",
+                "rg": "myrg"
+              },
+              {
+                "name": "acr-kv-subnet",
+                "addressprefix": "192.168.3.0/24",
+                "service": ["Microsoft.KeyVault", "Microsoft.ContainerRegistry"],
+                "rg": "myrg"
+              },
+              {
+                "name": "appgw-subnet",
+                "addressprefix": "192.168.4.0/24",
+                "rg": "myrg"
+              }
+        ]
+    },
+    "keyvaults": {
+        "value": [
+            {
+                "name": "aro-kv",
+                "location": "North Europe",
+                "sku": "Standard",
+                "tenantId": "215b7ce2-5263-4593-a622-da030405d151",
+                "diskencrypt": true,
+                "purge": false,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "defaultAction": "Deny",
+                    "ipRules": [
+                        {
+                            "value": "4.245.216.59"
+                        }
+                    ]
+                },
+                "accessPolicies": [
+                    {
+                        "objectId": "4c8fc9f7-21c3-4d54-a704-58b2a06dbb3c",
+                        "tenantId": "215b7ce2-5263-4593-a622-da030405d151",
+                        "permissions": {
+                            "certificates": [
+                                "list",
+                                "get"
+                            ],
+                            "keys": [
+                                "list",
+                                "get"
+                            ],
+                            "secrets": [
+                                "list",
+                                "get"
+                            ],
+                            "storage": [
+                                "list"
+                            ]
+                        }
+                    }
+                ],
+                "rg": "myrg"
+            }
+        ]
+    },
+    "acrs": {
+        "value": [
+            {
+                "name": "aroacr",
+                "location":"North Europe",
+                "sku": "Premium",
+                "adminuser": false,
+                "access": "Enabled",
+                "bypass": "AzureServices",
+                "networkRuleSet": {
+                    "defaultAction": "Deny",
+                    "ipRules": [
+                        {
+                            "value": "20.82.144.6",
+                            "action": "Allow"
+                        }
+                    ]
+                },
+                "rg": "myrg"
+            }
+        ]
+    },
+    "aro": {
+        "value": [
+            {
+                "name": "arocluster",
+                "location": "North Europe",
+                "visibility": "Private",
+                "rgid": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/resourceGroups/myrg",
+                "version": "4.15.27",
+                "arodomain": "davidcloud.site",
+                "ingressProfiles": [
+                    {
+                        "name": "aro-ingress",
+                        "visibility": "Public"
+                    }
+                ],
+                "vm": "Standard_D4s_v3",
+                "workerProfiles": [
+                    {
+                        "count": 3,
+                        "disksize": 128,
+                        "name": "aro-worker",
+                        "vmsize": "Standard_D4s_v3",
+                        "encryption": "Enabled"
+                    }
+                ],
+                "podcidr": "10.240.1.0/20",
+                "servicecidr": "172.16.0.0/12",
+                "rg": "myrg"
+            }
+        ]
+    },
+    "nsgs": {
+        "value": [
+            {
+                "name": "aro-nsg",
+                "location":"North Europe",
+                "rg": "myrg",
+                "securityRules": [
+                    {
+                        "name": "aro-rules",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "priority": 100,
+                        "protocol": "Tcp",
+                        "destination": "*",
+                        "source": "*",
+                        "destport": "6443",
+                        "sourceport": "*"
+                    },
+                    {
+                        "priority": 110,
+                        "direction": "Inbound",
+                        "access": "Allow",
+                        "protocol": "Tcp",
+                        "source": "*",
+                        "destination": "*",
+                        "sourceport": "*",
+                        "destport": "443"
+                    },
+                    {
+                        "priority": 120,
+                        "direction": "Inbound",
+                        "access": "Allow",
+                        "protocol": "*",
+                        "source": "VirtualNetwork",
+                        "destination": "*",
+                        "sourceport": "*",
+                        "destport": "*"
+                    },
+                    {
+                        "priority": 130,
+                        "direction": "Outbound",
+                        "access": "Allow",
+                        "protocol": "*",
+                        "source": "*",
+                        "destination": "AzureCloud",
+                        "sourceport": "*",
+                        "destport": "*"
+                    }
+                ]
+            }
+        ]
+    },
+    "roles": {
+        "value": [
+            {
+                "name": "network-role",
+                "principalId": "9d34e28b-68c3-401f-b1f7-0f6f144f41d1",
+                "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+                "rg": "myrg"
+            },
+            {
+                "name": "network-role-2",
+                "principalId": "72b67612-51f1-4181-b475-c55b3603aaf3",
+                "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+                "rg": "myrg"
+            },
+            {
+                "name": "acr-role",
+                "principalId": "72b67612-51f1-4181-b475-c55b3603aaf3",
+                "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d",
+                "rg": "myrg"
+            }
+        ]
+    },
+    "privatendpoints": {
+        "value": [
+            {
+                "name": "acrendpoint",
+                "location": "North Europe",
+                "privateLinkServiceConnections": [
+                    {
+                        "name": "acrvnetlink",
+                        "gid": "registry"
+                    }
+                ]
+            },
+            {
+                "name": "kvendpoint",
+                "location": "North Europe",
+                "privateLinkServiceConnections": [
+                    {
+                        "name":"acrvnetlink",
+                        "gid": "vault"
+                    }
+                ]
+            }
+        ]
+    },
+    "privdns": {
+        "value": [
+            {
+                "name": "arokvdns.privatelink.azure.com",
+                "location": "North Europe"
+            },
+            {
+                "name": "aroacrdns.privatelink.azure.com",
+                "location":"North Europe"
+            }
+        ]
+    },
+    "privlink": {
+        "value": [
+            {
+                "name": "acrvnetlink",
+                "location": "global"
+            },
+            {
+                "name": "kv-vnet-link",
+                "location": "global"
+            }
+        ]
+    }
+}
