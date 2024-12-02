@@ -14,6 +14,7 @@ param workerSubnetId string
 @secure()
 param pullsecret string
 output aroid string = arobicep.id
+output aropr string = arobicep.properties.clusterProfile.domain
 
 
 

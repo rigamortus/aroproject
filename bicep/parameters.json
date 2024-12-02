@@ -257,5 +257,84 @@
                 "location": "global"
             }
         ]
+    },
+    "svcbus": {
+        "value": [
+            {
+                "name": "aro-svcbus",
+                "location": "North Europe",
+                "sku": "Standard"
+            }
+        ]
+    },
+    "svcauth": {
+        "value": [
+            {
+                "rulename": "listener"
+            }
+        ]
+    },
+    "queue": {
+        "value": [
+            {
+                "name": "orders"
+            }
+        ]
+    },
+    "queueauth": {
+        "value": [
+            {
+                "name": "sender"
+            }
+        ]
+    },
+    "cosmosaccount": {
+        "value": [
+            {
+                "name": "aro-cosmos",
+                "location":"North Europe",
+                "kind": "MongoDB",
+                "capability": "EnableServeless",
+                "locations": [
+                    {
+                        "zone": false,
+                        "failover": 0,
+                        "name": "West Europe"
+                    }
+                ],
+                "serverversion": "4.2"
+            }
+        ]
+    },
+    "cosmosdb": {
+        "value": [
+            {
+                "name": "aro-cosmosdb",
+                "id": "aro-orderdb",
+                "containers": [
+                    {
+                        "name": "orders",
+                        "id": "aro-orders",
+                        "partition": ["/storeId"]
+                    }
+                ]
+            }
+        ]
+    },
+    "identity": {
+        "value": [
+            {
+                "name": "aro-identity"
+            }
+        ]
+    },
+    "fedcred": {
+        "value": [
+            {
+                "name": "aro-fed",
+                "ns": "pets",
+                "sacc": "pets-sa"
+            }
+        ]
     }
 }
