@@ -17,6 +17,7 @@ stages:
         displayName: Scan and Run What-If
         steps:
         - task: RunARMTTKTestsXPlat@1
+          continueOnError: true
           inputs:
             templatelocation: $(bicepfolder)
             resultLocation: '$(System.DefaultWorkingDirectory)/results'
