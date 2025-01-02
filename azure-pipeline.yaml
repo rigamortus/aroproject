@@ -1,10 +1,10 @@
 name: ARO Store Demo
 trigger: none
 variables:
-  bicepfolder: '$(System.DefaultWorkingDirectory)\bicep'
+  bicepfolder: '$(System.DefaultWorkingDirectory)/bicep'
   resourceGroupName: 'myrg'
-  templateFile: '$(System.DefaultWorkingDirectory)\bicep\module.bicep'
-  parametersFile: '$(System.DefaultWorkingDirectory)\bicep\parameters.json'
+  templateFile: '$(System.DefaultWorkingDirectory)/bicep/module.bicep'
+  parametersFile: '$(System.DefaultWorkingDirectory)/bicep/parameters.json'
 
 
 pool:
@@ -19,7 +19,7 @@ stages:
         - task: RunARMTTKTestsXPlat@1
           inputs:
             templatelocation: $(bicepfolder)
-            resultLocation: '$(System.DefaultWorkingDirectory)\results'
+            resultLocation: '$(System.DefaultWorkingDirectory)/results'
             allTemplatesMain: false
             cliOutputResults: true
             ignoreExitCode: false
@@ -27,7 +27,7 @@ stages:
           displayName: Publish Results
           inputs:
             testResultsFormat: 'NUnit'
-            testResultsFiles: '$(System.DefaultWorkingDirectory)\results\*-armttk.xml'
+            testResultsFiles: '$(System.DefaultWorkingDirectory)/results/*-armttk.xml'
           condition: always()
 
         - task: AzureCLI@2
