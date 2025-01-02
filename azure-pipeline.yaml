@@ -13,5 +13,6 @@ stages:
         displayName: Scan and Run What-If
         pool:
           vmImage: 'windows-latest'
-        steps:
+        steps: 
+        
         
