@@ -1,8 +1,10 @@
-param name string = 'aro-listener-secret'
+param name string
 param location string
 param sku string
-
+//param listenerame string
+//param keyVault string
 output svcbus string = serviceBus.name
+
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
   name: name
@@ -12,10 +14,11 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
   }
 }
 
-module listenersecretModule '../kv/kvsecret.bicep' = {
-  name: 'deploy-${name}'
-  params: {
-    name: name
-    secretValue: serviceBus.listKeys().primaryKey
-  }
-}
+// module listenersecretModule '../kv/kvsecret.bicep' = {
+//   name: 'deploy-${listenerame}'
+//   params: {
+//     name: listenerame
+//     secretValue: serviceBus.listKeys().primaryKey
+//      keyVault: keyVault
+//   }
+// }

@@ -14,20 +14,38 @@ param queue array
 param queueauth array
 param cosmosaccount array
 param cosmosdb array
+param mongoconfig array
+param cognitive array
 //param cosmosass array
 param identity array
+//param grafroles array
+param airoles array
 param fedcred array
-param location string = 'north europe'
+param aimodel array
+param monitors array
+param observability array
+param loganalytics array
+param location string = 'northeurope'
 param subscriptionId string = '01865a64-1974-4037-8780-90e5bebf910e'
 param keyVaultName string = 'pullkv'
-param secretName string = 'pullsecret'
+//param secretName string = 'pullsecret'
+//param client string = 'client'
+param grafroles array = [
+  {
+    name: 'aro-grafana'
+    roledef: '/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/b0d8363b-8ddd-447d-831f-62ca05bff136'
+    principal: 'ServicePrincipal'
+  }
+]
+param principalId string = '4c8fc9f7-21c3-4d54-a704-58b2a06dbb3c'
+param grafanaAdminRole string = '/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/22926164-76b3-42b3-bc55-97df8dab3e41'
 var nsgid = nsgModule[0].outputs.nsgid
-output masterSubnetId string = subnetModule[0].outputs.id
+output masterSubnetId string = subnetModule1.outputs.id
 output vnetname string = vnetModule[0].outputs.vnetname
 var vnetName = vnetModule[0].outputs.vnetname
-var masterSubnetId = subnetModule[0].outputs.id
-var workerSubnetId = subnetModule[1].outputs.id
-var acrkvSubnetId = subnetModule[2].outputs.id
+var masterSubnetId = subnetModule1.outputs.id
+var workerSubnetId = subnetModule2.outputs.id
+var acrkvSubnetId = subnetModule3.outputs.id
 var acrid = acrModule[0].outputs.acrname
 var kvid = keyvaultModule[0].outputs.kvid
 var vnetid = vnetModule[0].outputs.vnetid
@@ -37,7 +55,18 @@ var svcbusname = svcbusModule[0].outputs.svcbus
 var queuenm = queueModule[0].outputs.namequeue
 var cosmosacc = cosmosaccModule[0].outputs.name
 var aropr = aroModule[0].outputs.aropr
+//var aroid = aroModule[0].outputs.aroid
+var aroname = aroModule[0].outputs.aroname
 var uaidentity = userassModule[0].outputs.uaidentity
+var aiaccount = aiaccountModule[0].outputs.aiaccount
+var logid = logModule[0].outputs.logid
+var logname = logModule[0].outputs.name
+var monitorid = monitorModule[0].outputs.id
+//var monitorname = monitorModule[0].outputs.name
+var grafanaid = observModule[0].outputs.grafanaid
+var uaname = userassModule[0].outputs.uaname
+var aroissuer = aroModule[0].outputs.aroissuer
+var kvName = keyvaultModule[0].outputs.keyVaultName
 
 resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
   name: keyVaultName
@@ -57,19 +86,68 @@ module vnetModule './vnets/vnet.bicep' = [
   }
 ]
 
-module subnetModule './subnets/subnet.bicep' = [
-  for subnet in subnets: {
-    name: 'deploy-${subnet.name}'
-    scope: resourceGroup(subscriptionId, subnet.rg)
-    dependsOn: vnetModule
-    params: {
-      name: subnet.name
-      vnetName: vnetName
-      addressprefix: subnet.addressprefix
-      nsgid: nsgid
-    }
+// module subnetModule './subnets/subnet.bicep' = [
+//   for subnet in subnets: {
+//     name: 'deploy-${subnet.name}'
+//     scope: resourceGroup(subscriptionId, subnet.rg)
+//     dependsOn: vnetModule
+//     params: {
+//       name: subnet.name
+//       vnetName: vnetName
+//       addressprefix: subnet.addressprefix
+//       nsgid: nsgid
+//     }
+//   }
+// ]
+
+module subnetModule1 './subnets/subnet.bicep' = if(subnets[0] != null) {
+  name: 'deploy-${subnets[0].name}'
+  scope: resourceGroup(subscriptionId, subnets[0].rg)
+  dependsOn: [vnetModule]
+  params: {
+    name: subnets[0].name
+    vnetName: vnetName
+    addressprefix: subnets[0].addressprefix
+    nsgid: nsgid
   }
-]
+}
+
+module subnetModule2 './subnets/subnet.bicep' = if(subnets[1] != null) {
+  name: 'deploy-${subnets[1].name}'
+  scope: resourceGroup(subscriptionId, subnets[1].rg)
+  dependsOn: [subnetModule1]
+  params: {
+    name: subnets[1].name
+    vnetName: vnetName
+    addressprefix: subnets[1].addressprefix
+    nsgid: nsgid
+  }
+}
+
+module subnetModule3 './subnets/subnet.bicep' = if(subnets[2] != null) {
+  name: 'deploy-${subnets[2].name}'
+  scope: resourceGroup(subscriptionId, subnets[2].rg)
+  dependsOn: [subnetModule2]
+  params: {
+    name: subnets[2].name
+    vnetName: vnetName
+    addressprefix: subnets[2].addressprefix
+    nsgid: nsgid
+  }
+}
+
+module subnetModule4 './subnets/subnet.bicep' = if(subnets[3] != null) {
+  name: 'deploy-${subnets[3].name}'
+  scope: resourceGroup(subscriptionId, subnets[3].rg)
+  dependsOn: [subnetModule3]
+  params: {
+    name: subnets[3].name
+    vnetName: vnetName
+    addressprefix: subnets[3].addressprefix
+    nsgid: nsgid
+  }
+}
+
 
 module keyvaultModule './kv/kv.bicep' = [
   for kv in keyvaults: {
@@ -119,13 +197,14 @@ module nsgModule './nsg/nsg.bicep' = [
 module aroModule './aro/aro.bicep' = [
   for osc in aro: {
     name: 'deploy-${osc.name}'
+    dependsOn: [subnetModule4]
     scope: resourceGroup(subscriptionId, osc.rg)
     params: {
       name: osc.name
-      location: osc.location
+      //location: osc.location
       visibility: osc.visibility
-      rgid: osc.rgid
-      pullsecret: kv.getSecret(secretName)
+      //rgid: osc.rgid
+      pullsecret: kv.getSecret('pullsecret')
       version: osc.version
       arodomain: osc.arodomain
       ingressProfiles: osc.ingressProfiles
@@ -135,6 +214,8 @@ module aroModule './aro/aro.bicep' = [
       vm: osc.vm
       workerSubnetId: workerSubnetId
       masterSubnetId: masterSubnetId
+      clientid: osc.clientid
+      clientsecret: kv.getSecret('client')
     }
   }
 ]
@@ -142,11 +223,13 @@ module aroModule './aro/aro.bicep' = [
 module roleModule './roles/roles.bicep' = [
   for role in roles: {
     name: 'deploy-${role.name}'
+    //scope: role.scope
     params: {
       principalId: role.principalId
       roledef: role.roledef
-      subscriptionId: subscriptionId
-      vnetName: vnetName
+      principal: role.principal
+      //vnetName: vnetName
+      //aiaccount: aiaccount
     }
   }
 ]
@@ -157,7 +240,7 @@ module privendpModule './privatendpoint/privendp.bicep' = [
     params: {
       name: privend.name
       location: privend.location
-      privateLinkServiceConnections: privend.privatelink
+      privateLinkServiceConnections: privend.privateLinkServiceConnections
       acrkvSubnetId: acrkvSubnetId
       acrid: acrid
       kvid: kvid
@@ -196,6 +279,8 @@ module svcbusModule './servicebus/svcbus.bicep' = [
       name: bus.name
       location: bus.location
       sku: bus.sku
+      //listenerame: 'listenersecret'
+      //keyVault: kvName
     }
   }
 ]
@@ -203,6 +288,7 @@ module svcbusModule './servicebus/svcbus.bicep' = [
 module svcauthModule './svcbusauth/svcbusauth.bicep' = [
   for auth in svcauth: {
     name: 'deploy-${auth.rulename}'
+    dependsOn: svcbusModule
     params: {
       rulename: auth.rulename
       svcbusname: svcbusname
@@ -228,6 +314,7 @@ module queueauthModule './queueauth/auth.bicep' = [
     params: {
       queueauthname: auth.name
       queuenm: '${svcbusname}/${queuenm}'
+      //keyVault: kvName
     }
   }
 ]
@@ -265,9 +352,19 @@ module cosmosdbModule './cosmos/cosmosdb.bicep' = [
 //   }
 // }]
 
+module mongoModule './mongo/mongo.bicep' = [for mongo in mongoconfig: {
+  name: 'deploy-${mongo.name}'
+  params: {
+    name: '${cosmosacc}/${mongo.name}'
+    collections: mongo.collections
+    id: mongo.id
+    //throughput: mongo.throughput
+  } 
+}]
 module userassModule './identity/userass.bicep' = [
   for ua in identity: {
     name: 'deploy-${ua.name}'
+    dependsOn: aroModule
     params: {
       name: ua.name
     }
@@ -277,11 +374,123 @@ module userassModule './identity/userass.bicep' = [
 module fedcredModule './identity/fed.bicep' = [
   for fed in fedcred: {
     name: 'deploy-${fed.name}'
+    dependsOn: userassModule
     params: {
-      aropr: aropr
+      aropr: aroissuer
       namespace: fed.ns
       serviceAccountName: fed.sacc
-      uaidentity: uaidentity
+      uaname: uaname
     }
   }
 ]
+
+module aiaccountModule './ai/cognitiveacc.bicep' = [for acc in cognitive: {
+  name: 'deploy-${acc.name}'
+  params: {
+    name: acc.name
+    location: acc.location
+    sku: acc.sku
+    kind: acc.kind
+    acls: acc.acls
+    customsub: acc.customsub
+  }
+}]
+
+@batchSize(1)
+module aimodelModule './ai/openai.bicep' = [ for model in aimodel: {
+  name: 'deploy-${model.name}'
+  params: {
+    name: model.name
+    //model: model.model
+    format: model.model.format
+    version: model.model.version
+    aiaccount: aiaccount
+    sku: model.sku
+    //raiPolicyName: model.rai
+  }
+}]
+
+module airole './roles/roles.bicep' = [ for airole in airoles: {
+  name: 'deploy-${airole.name}'
+  dependsOn: userassModule
+  params: {
+    principalId: uaidentity
+    roledef: airole.roledef
+    principal: airole.principal
+  }
+}]
+
+
+module logModule './monitor/log.bicep' = [for log in loganalytics: {
+  name: 'deploy-${log.name}'
+  params: {
+    name: log.name
+  }  
+}]
+
+module monitorModule './monitor/monitor.bicep' = [for monitor in monitors: {
+  name: 'deploy-${monitor.name}'
+  params: {
+    name: monitor.name
+    location: location
+  }  
+}]
+
+module observModule './monitor/observability.bicep' = [for obs in observability: {
+  name: 'deploy-${obs.clusterName}'
+  params: {
+    location: location
+    //aroclusterid: aroid
+    clusterName: aroname
+    grafaname: obs.grafaname
+    logAnalyticsId: logid
+    logAnalyticsName: logname
+    monitorId: monitorid
+    //monitorName: monitorname
+    name: obs.name
+    nodename: obs.nodename
+  } 
+}]
+
+module grafanaMonitorReaderRole './roles/roles.bicep' = [ for grafrole in grafroles: {
+  name: 'deploy-${grafrole.name}'
+  params: {
+    principalId: grafanaid
+    roledef: grafrole.roledef
+    principal: grafrole.principal
+  }
+}]
+
+module roleAssignmentForMe './roles/roles.bicep' = {
+  name: 'grafanaRoleAssignmentForMe'
+  params: {
+    principalId: principalId
+    roledef: grafanaAdminRole
+    principal: 'User'
+  }
+}
+
+module sendersecretModule './kv/kvsecret.bicep' = {
+  name: 'deploy-senderKey'
+  params: {
+    name: 'senderKey'
+    secretValue: queueauthModule[0].outputs.queueauthkey
+    keyVault: kvName
+    enabled: true
+    contentType: 'string'
+    exp: 0
+    nbf: 0
+  }
+}
+
+module listenersecretModule './kv/kvsecret.bicep' = {
+  name: 'deploy-listenerkey'
+  params: {
+    name: 'listenerkey'
+    secretValue: svcauthModule[0].outputs.svcbuskey
+    keyVault: kvName
+    enabled: true
+    contentType: 'string'
+    exp: 0
+  }
+}

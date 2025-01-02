@@ -8,7 +8,7 @@ resource nsgbicep 'Microsoft.Network/networkSecurityGroups@2024-03-01' = {
   location: location
   properties: {
     securityRules: [ for rule in securityRules: {
-      name: rule.securityRules
+      name: rule.name
       properties: {
         access: rule.access
         direction: rule.direction

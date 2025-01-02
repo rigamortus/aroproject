@@ -1,5 +1,5 @@
 param name string
-param keyVault string = 'pullkv'
+param keyVault string
 param contentType string = 'string'
 @secure()
 param secretValue string

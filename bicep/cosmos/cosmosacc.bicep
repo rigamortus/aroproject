@@ -4,11 +4,14 @@ param keyVault string = 'pullkv'
 param connectionStringKey string = 'AZURE-COSMOS-CONNECTION-STRING'
 param location string
 param locations array
-param capability string
+param capability array
 param serverversion string
 output name string = cosmosAccount.name
+output connectionStringKey string = connectionStringKey
+output endpoint string = cosmosAccount.properties.documentEndpoint
+output id string = cosmosAccount.id
 
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-09-01-preview' = {
+resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-08-15' = {
   name: name
   kind: kind
   location: location
@@ -23,9 +26,8 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-09-01-preview
     consistencyPolicy: {
       defaultConsistencyLevel: 'Session'
     }
-    capabilities: [
-      {
-        name: capability
+    capabilities: [ for cap in capability: {
+        name: cap.name
       }
     ]
     enableAutomaticFailover: false

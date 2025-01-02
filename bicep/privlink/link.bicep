@@ -19,6 +19,7 @@ resource linkdns 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-
     virtualNetwork: {
       id: vnetid
     }
+    registrationEnabled: false
   }
   parent: acr
 }
@@ -30,6 +31,7 @@ resource kvlinkdns 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-0
     virtualNetwork: {
       id: vnetid
     }
+    registrationEnabled: false
   }
   parent: kv
 }

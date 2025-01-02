@@ -21,8 +21,13 @@ resource arosubnet 'Microsoft.Network/virtualNetworks/subnets@2024-03-01' = {
       {
         service: 'Microsoft.ContainerRegistry'
       }
-    ] : null
-    networkSecurityGroup: {
+    ] : [
+      {
+        service: 'Microsoft.ContainerRegistry'
+      }
+    ]
+    privateLinkServiceNetworkPolicies: 'Disabled'
+    networkSecurityGroup: contains(['master-subnet', 'worker-subnet'], name) ? null : {
       id: nsgid
     }
   }

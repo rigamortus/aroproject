@@ -8,7 +8,7 @@
                     "Name": "vnet-test",
                     "Team": "DevOps"
                 },
-                "addressprefix": "192.168.0.0/24",
+                "addressprefix": "192.168.0.0/16",
                 "rg": "myrg"
             }
         ]
@@ -41,12 +41,12 @@
     "keyvaults": {
         "value": [
             {
-                "name": "aro-kv",
+                "name": "aro-kv-victoria",
                 "location": "North Europe",
                 "sku": "Standard",
                 "tenantId": "215b7ce2-5263-4593-a622-da030405d151",
                 "diskencrypt": true,
-                "purge": false,
+                "purge": true,
                 "networkAcls": {
                     "bypass": "AzureServices",
                     "defaultAction": "Deny",
@@ -86,14 +86,14 @@
     "acrs": {
         "value": [
             {
-                "name": "aroacr",
+                "name": "rigaaroacr",
                 "location":"North Europe",
                 "sku": "Premium",
                 "adminuser": false,
                 "access": "Enabled",
                 "bypass": "AzureServices",
                 "networkRuleSet": {
-                    "defaultAction": "Deny",
+                    "default": "Deny",
                     "ipRules": [
                         {
                             "value": "20.82.144.6",
@@ -109,29 +109,30 @@
         "value": [
             {
                 "name": "arocluster",
-                "location": "North Europe",
+                "location": "northeurope",
                 "visibility": "Private",
                 "rgid": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/resourceGroups/myrg",
                 "version": "4.15.27",
                 "arodomain": "davidcloud.site",
                 "ingressProfiles": [
                     {
-                        "name": "aro-ingress",
+                        "name": "default",
                         "visibility": "Public"
                     }
                 ],
-                "vm": "Standard_D4s_v3",
+                "vm": "Standard_D8s_v3",
                 "workerProfiles": [
                     {
                         "count": 3,
                         "disksize": 128,
-                        "name": "aro-worker",
+                        "name": "worker",
                         "vmsize": "Standard_D4s_v3",
-                        "encryption": "Enabled"
+                        "encryption": "Disabled"
                     }
                 ],
-                "podcidr": "10.240.1.0/20",
+                "podcidr": "10.240.0.0/16",
                 "servicecidr": "172.16.0.0/12",
+                "clientid": "9fe7abd0-2446-4731-b8c1-e1213dd7e094",
                 "rg": "myrg"
             }
         ]
@@ -155,6 +156,7 @@
                         "sourceport": "*"
                     },
                     {
+                        "name": "aro-rules-two",
                         "priority": 110,
                         "direction": "Inbound",
                         "access": "Allow",
@@ -165,6 +167,7 @@
                         "destport": "443"
                     },
                     {
+                        "name": "aro-rules-three",
                         "priority": 120,
                         "direction": "Inbound",
                         "access": "Allow",
@@ -175,6 +178,7 @@
                         "destport": "*"
                     },
                     {
+                        "name": "aro-rules-four",
                         "priority": 130,
                         "direction": "Outbound",
                         "access": "Allow",
@@ -192,21 +196,48 @@
         "value": [
             {
                 "name": "network-role",
-                "principalId": "9d34e28b-68c3-401f-b1f7-0f6f144f41d1",
+                "principalId": "2436ade4-9bdd-4575-9e52-3b11abb70330",
                 "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
-                "rg": "myrg"
+                "principal": "ServicePrincipal"
             },
             {
                 "name": "network-role-2",
                 "principalId": "72b67612-51f1-4181-b475-c55b3603aaf3",
                 "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
-                "rg": "myrg"
+                "principal": "ServicePrincipal"
+            },
+            {
+                "name": "network-role-3",
+                "principalId": "9fe7abd0-2446-4731-b8c1-e1213dd7e094",
+                "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+                "principal": "ServicePrincipal"
+            },
+            {
+                "name": "contributor-role",
+                "principalId": "9fe7abd0-2446-4731-b8c1-e1213dd7e094",
+                "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+                "principal": "ServicePrincipal"
             },
             {
                 "name": "acr-role",
                 "principalId": "72b67612-51f1-4181-b475-c55b3603aaf3",
                 "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d",
-                "rg": "myrg"
+                "principal": "ServicePrincipal"
+            },
+            {
+                "name": "ai-role",
+                "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/5e0bd9bd-7b93-4f28-af87-19fc36ad61bd",
+                "principalId": "2436ade4-9bdd-4575-9e52-3b11abb70330",
+                "principal": "ServicePrincipal"
+            }
+        ]
+    },
+    "airoles": {
+        "value": [
+            {
+                "name": "ai-role-two",
+                "roledef": "/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/5e0bd9bd-7b93-4f28-af87-19fc36ad61bd",
+                "principal": "ServicePrincipal"
             }
         ]
     },
@@ -238,11 +269,11 @@
         "value": [
             {
                 "name": "arokvdns.privatelink.azure.com",
-                "location": "North Europe"
+                "location": "global"
             },
             {
                 "name": "aroacrdns.privatelink.azure.com",
-                "location":"North Europe"
+                "location": "global"
             }
         ]
     },
@@ -294,12 +325,19 @@
                 "name": "aro-cosmos",
                 "location":"North Europe",
                 "kind": "MongoDB",
-                "capability": "EnableServeless",
+                "capability": [
+                    {
+                        "name": "EnableMongo"
+                    },
+                    {
+                        "name": "EnableServerless"
+                    }
+                ],
                 "locations": [
                     {
                         "zone": false,
                         "failover": 0,
-                        "name": "West Europe"
+                        "name": "UK South"
                     }
                 ],
                 "serverversion": "4.2"
@@ -321,6 +359,23 @@
             }
         ]
     },
+    "mongoconfig": {
+        "value": [
+            {
+                "name": "aro-mongo-orderdb",
+                "id": "aro-mongo-orderdb",
+                "throughput": 400,
+                "collections": [
+                    {
+                        "id": "orders",
+                        "name": "orders",
+                        "shard": "Hash",
+                        "index": "_id"
+                    }
+                ]
+            }
+        ]
+    },
     "identity": {
         "value": [
             {
@@ -334,6 +389,75 @@
                 "name": "aro-fed",
                 "ns": "pets",
                 "sacc": "pets-sa"
+            }
+        ]
+    },
+    "cognitive": {
+        "value": [
+            {
+                "name": "rigamort-aro-ai",
+                "location": "East US",
+                "kind": "OpenAI",
+                "customsub": "rigamort-aro-ai",
+                "acls": {
+                    "defaultAction": "Allow"
+                },
+                "sku": {
+                    "name": "S0"
+                }
+            }
+        ]
+    },
+    "aimodel": {
+        "value": [
+            {
+                "name": "gpt-35-turbo",
+                "model": {
+                    "format": "OpenAI",
+                    "name": "gpt-35-turbo",
+                    "version": "0301"
+                },
+                "sku" : {
+                    "name": "Standard",
+                    "capacity": 30
+                  }
+            },
+            {
+                "name": "dall-e-3",
+                "model": {
+                    "format": "OpenAI",
+                    "name": "dall-e-3",
+                    "version": "3.0",
+                    "rai": "aro-rai"
+                },
+                "sku": {
+                    "name": "Standard",
+                    "capacity": 1
+                }
+            }
+        ]
+    },
+    "loganalytics": {
+        "value": [
+            {
+                "name": "aro-logs"
+            }
+        ]
+    },
+    "monitors": {
+        "value": [
+            {
+                "name": "aro-monitors"
+            }
+        ]
+    },
+    "observability": {
+        "value": [
+            {
+                "clusterName": "aro-observability",
+                "grafaname": "aro-grafana",
+                "name": "prometheus-rule-group",
+                "nodename": "prom-node-rule-group"
             }
         ]
     }

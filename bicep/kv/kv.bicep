@@ -7,6 +7,7 @@ param purge bool
 param networkAcls object
 param accessPolicies array
 output kvid string = keyVault.id
+output keyVaultName string = keyVault.name
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
   name: name
@@ -30,8 +31,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
       objectId: policy.objectId
       tenantId: policy.tenantId
       permissions: {
-        keys: [policy.permissions.keys]
-        secrets: [policy.permissions.secrets]       
+        keys: policy.permissions.keys
+        secrets: policy.permissions.secrets   
       }
     }
     ]
