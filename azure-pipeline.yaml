@@ -41,6 +41,7 @@ stages:
               az deployment group what-if --resource-group $(resourceGroupName) \ --template-file $(templateFile) \ --parameters @$(parametersFile)
     
   - stage: BicepDeploy
+    dependsOn: [BicepInfrastructureScan]
     jobs:
       - job: waitForValidation
         displayName: Wait for external validation
