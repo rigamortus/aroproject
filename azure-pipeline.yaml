@@ -1,0 +1,17 @@
+name: ARO Store Demo
+trigger: none
+variables:
+  bicepfolder: '$(System.DefaultWorkingDirectory)\bicep'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Bicep Infrastructure
+    jobs:
+      - job: What-If Scan Bicep
+        displayName: Scan and Run What-If
+        pool:
+          vmImage: 'windows-latest'
+        steps:
+        
