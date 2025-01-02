@@ -9,10 +9,22 @@ pool:
 stages:
   - stage: Bicep Infrastructure
     jobs:
-      - job: What-If Scan Bicep
+      - job: BicepScan
         displayName: Scan and Run What-If
         pool:
           vmImage: 'windows-latest'
-        steps: 
+        steps:
+        - task: RunARMTTKTests@1
+          inputs:
+            templatelocation: $(bicepfolder)
+            resultLocation: '$(System.DefaultWorkingDirectory)\results'
+            includeTests: 'VM Images Should Use Latest Version,Resources Should Have Location'
+            skipTests: 'VM Images Should Use Latest Version,Resources Should Have Location'
+            mainTemplates: 'template1.json, template2.json'
+            allTemplatesMain: false
+            cliOutputResults: true
+            recurse: true
+            ignoreExitCode: false
+            usePSCore: true
         
         
