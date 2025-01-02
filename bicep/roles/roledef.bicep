@@ -41,9 +41,6 @@ resource cosmosrole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     principalId: uaidentity
     roleDefinitionId: roledefid
   }
-  dependsOn: [
-    roleDefinition
-  ]
 }
 
 resource svcbusroleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
