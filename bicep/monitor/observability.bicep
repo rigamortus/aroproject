@@ -10,7 +10,7 @@ param nodename string
 param grafaname string
 output grafanaid string = grafana.identity.principalId
 
-resource monitorDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource monitorDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'MSCI-${clusterName}'
   location: location
   kind: 'Linux'
@@ -62,7 +62,7 @@ resource monitorDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2022-
 }
 
 
-resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2022-06-01' = {
+resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2023-03-11' = {
   name: 'MSProm-${clusterName}'
   location: location
   kind: 'Linux'
@@ -89,7 +89,7 @@ resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2022
 //   }
 // }
 
-resource grafana 'Microsoft.Dashboard/grafana@2022-08-01' = { 
+resource grafana 'Microsoft.Dashboard/grafana@2023-10-01-preview' = { 
   name: grafaname
   location: location
   identity: {

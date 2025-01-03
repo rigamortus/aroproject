@@ -21,7 +21,6 @@ resource cosmosdb 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-09-01
           ]
         }
       }
-      options: {}
     }    
   }]
 }

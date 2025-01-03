@@ -11,7 +11,7 @@ output connectionStringKey string = connectionStringKey
 output endpoint string = cosmosAccount.properties.documentEndpoint
 output id string = cosmosAccount.id
 
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-08-15' = {
+resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-12-01-preview' = {
   name: name
   kind: kind
   location: location

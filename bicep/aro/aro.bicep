@@ -1,6 +1,6 @@
 var deploy = 'true'
 param name string
-//param location string
+param location string
 param visibility string
 //param rgid string
 param version string
@@ -27,7 +27,7 @@ output aroissuer string = arobicep.properties.apiserverProfile.url
 
 resource arobicep 'Microsoft.RedHatOpenShift/openShiftClusters@2023-04-01' = if (deploy == 'true') {
   name: name 
-  location: 'northeurope'
+  location: location
   properties: {
     apiserverProfile: {
       visibility: visibility

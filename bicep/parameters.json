@@ -41,7 +41,7 @@
     "keyvaults": {
         "value": [
             {
-                "name": "aro-kv-victoria",
+                "name": "aro-kv-victori",
                 "location": "North Europe",
                 "sku": "Standard",
                 "tenantId": "215b7ce2-5263-4593-a622-da030405d151",
@@ -379,7 +379,8 @@
     "identity": {
         "value": [
             {
-                "name": "aro-identity"
+                "name": "aro-identity",
+                "location": "North Europe"
             }
         ]
     },
@@ -440,7 +441,8 @@
     "loganalytics": {
         "value": [
             {
-                "name": "aro-logs"
+                "name": "aro-logs",
+                "location": "North Europe"
             }
         ]
     },

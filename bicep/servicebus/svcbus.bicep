@@ -5,7 +5,6 @@ param sku string
 //param keyVault string
 output svcbus string = serviceBus.name
 
-
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
   name: name
   location: location

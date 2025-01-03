@@ -4,7 +4,7 @@ param queuenm string
 //param keyVault string
 output queueauthnm string = queueauthentication.name
 output queueauthid string = queueauthentication.id
-output queueauthkey string = queueauthentication.listKeys().primaryKey
+//output queueauthkey string = queueauthentication.listKeys().primaryKey
 
 resource parentqueue 'Microsoft.ServiceBus/namespaces/queues@2024-01-01' existing = {
   name: queuenm

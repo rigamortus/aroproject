@@ -1,10 +1,10 @@
 metadata description = 'Creates a Log Analytics workspace.'
 param name string
-param location string = 'northeurope'
+param location string
 param tags object = {}
 output logid string = logAnalytics.id
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: name
   location: location
   tags: tags

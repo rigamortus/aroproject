@@ -4,7 +4,7 @@ param svcbusname string
 param subscriptionId string = '01865a64-1974-4037-8780-90e5bebf910e'
 param svcbusroledef string ='090c5cfd-751d-490a-894a-3ce6f1109419'
 
-resource roleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2022-08-15' = {
+resource roleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-12-01-preview' = {
   parent: cosmos
   name: guid(cosmos.id, cosmosacc, 'sql-role')
   properties: {
@@ -18,7 +18,6 @@ resource roleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinition
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
         ]
-        notDataActions: []
       }
     ]
     roleName: 'Reader Writer'

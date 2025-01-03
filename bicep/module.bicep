@@ -67,6 +67,7 @@ var grafanaid = observModule[0].outputs.grafanaid
 var uaname = userassModule[0].outputs.uaname
 var aroissuer = aroModule[0].outputs.aroissuer
 var kvName = keyvaultModule[0].outputs.keyVaultName
+//var svcauthid = svcauthModule[0].outputs.svcauthname
 
 resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
   name: keyVaultName
@@ -201,7 +202,7 @@ module aroModule './aro/aro.bicep' = [
     scope: resourceGroup(subscriptionId, osc.rg)
     params: {
       name: osc.name
-      //location: osc.location
+      location: osc.location
       visibility: osc.visibility
       //rgid: osc.rgid
       pullsecret: kv.getSecret('pullsecret')
@@ -367,6 +368,7 @@ module userassModule './identity/userass.bicep' = [
     dependsOn: aroModule
     params: {
       name: ua.name
+      location: ua.location
     }
   }
 ]
@@ -425,6 +427,7 @@ module logModule './monitor/log.bicep' = [for log in loganalytics: {
   name: 'deploy-${log.name}'
   params: {
     name: log.name
+    location: log.location
   }  
 }]
 
@@ -474,7 +477,7 @@ module sendersecretModule './kv/kvsecret.bicep' = {
   name: 'deploy-senderKey'
   params: {
     name: 'senderKey'
-    secretValue: queueauthModule[0].outputs.queueauthkey
+    authRuleId: queueauthModule[0].outputs.queueauthnm
     keyVault: kvName
     enabled: true
     contentType: 'string'
@@ -483,11 +486,20 @@ module sendersecretModule './kv/kvsecret.bicep' = {
   }
 }
 
+// resource svcAuth 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01-01' existing = {
+//   name: svcauthid
+//   dependsOn: svcauthModule
+// }
+
+//var secretValue = svcAuth.listKeys().primaryKey
 module listenersecretModule './kv/kvsecret.bicep' = {
   name: 'deploy-listenerkey'
   params: {
     name: 'listenerkey'
-    secretValue: svcauthModule[0].outputs.svcbuskey
+    //secretValue: svcauthModule[0].outputs.svcbuskey
+    //secretValue: svcAuth.listKeys().primaryKey
+    //secretValue: secretValue
+    authRuleId: svcauthModule[0].outputs.svcauthname
     keyVault: kvName
     enabled: true
     contentType: 'string'
