@@ -89,7 +89,7 @@ resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2023
 //   }
 // }
 
-resource grafana 'Microsoft.Dashboard/grafana@2023-10-01-preview' = { 
+resource grafana 'Microsoft.Dashboard/grafana@2023-09-01' = { 
   name: grafaname
   location: location
   identity: {
