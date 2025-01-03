@@ -25,7 +25,7 @@ param aimodel array
 param monitors array
 param observability array
 param loganalytics array
-param location string = 'northeurope'
+//param location string = 'northeurope'
 param subscriptionId string = '01865a64-1974-4037-8780-90e5bebf910e'
 param keyVaultName string = 'pullkv'
 //param secretName string = 'pullsecret'
@@ -80,7 +80,7 @@ module vnetModule './vnets/vnet.bicep' = [
     scope: resourceGroup(subscriptionId, vnet.rg)
     params: {
       name: vnet.name
-      location: location
+      location: vnet.location
       tags: vnet.tags
       addressprefix: vnet.addressprefix
     }
@@ -435,14 +435,14 @@ module monitorModule './monitor/monitor.bicep' = [for monitor in monitors: {
   name: 'deploy-${monitor.name}'
   params: {
     name: monitor.name
-    location: location
+    location: monitor.location
   }  
 }]
 
 module observModule './monitor/observability.bicep' = [for obs in observability: {
   name: 'deploy-${obs.clusterName}'
   params: {
-    location: location
+    location: obs.location
     //aroclusterid: aroid
     clusterName: aroname
     grafaname: obs.grafaname

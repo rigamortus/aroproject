@@ -449,7 +449,8 @@
     "monitors": {
         "value": [
             {
-                "name": "aro-monitors"
+                "name": "aro-monitors",
+                "location": "North Europe"
             }
         ]
     },
@@ -459,7 +460,8 @@
                 "clusterName": "aro-observability",
                 "grafaname": "aro-grafana",
                 "name": "prometheus-rule-group",
-                "nodename": "prom-node-rule-group"
+                "nodename": "prom-node-rule-group",
+                "location": "North Europe"
             }
         ]
     }
