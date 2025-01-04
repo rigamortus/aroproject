@@ -76,3 +76,25 @@ stages:
               inlineScript: |
                 az --version
                 az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters @$(parametersFile)
+  
+  - stage: DockerBuild
+    dependsOn: BicepDeploy
+    jobs:
+      - job: SonarAnalysis
+        displayName: Perform Sonar Cloud Analysis
+        steps:
+        - task: SonarCloudPrepare@3
+          inputs:
+            SonarQube: 'sonar'
+            organization: 'devsecopssandbox'
+            scannerMode: 'cli'
+            configMode: 'file'
+        - task: SonarCloudAnalyze@3
+          inputs:
+            jdkversion: 'JAVA_HOME_17_X64'
+        - task: SonarCloudPublish@3
+          inputs:
+            pollingTimeoutSec: '300'
+      - job: OWASPAnalysis
+        displayName: OWASP Check
+        
