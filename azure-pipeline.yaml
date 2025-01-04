@@ -8,6 +8,13 @@ variables:
   parametersFile: '$(System.DefaultWorkingDirectory)/bicep/parameters.json'
 
 
+parameters:
+- name: APPLY
+  type: string
+  default: 'no'
+  values:
+    - 'yes'
+    - 'no'
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -50,6 +57,7 @@ stages:
     
   - stage: BicepDeploy
     dependsOn: [BicepInfrastructureScan]
+    condition: eq(variables['APPLY'], 'yes')
     jobs:
       - job: waitForValidation
         displayName: Wait for external validation
