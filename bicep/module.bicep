@@ -331,6 +331,22 @@ module queueModule './queue/queue.bicep' = [
 //   }
 // ]
 
+
+    // "svcauth": {
+    //     "value": [
+    //         {
+    //             "rulename": "listener"
+    //         }
+    //     ]
+    // },
+
+  //   "queueauth": {
+  //     "value": [
+  //         {
+  //             "name": "sender"
+  //         }
+  //     ]
+  // },
 param sendername string = 'sender'
 
 module queueauthModule './queueauth/auth.bicep' = {

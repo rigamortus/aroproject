@@ -298,24 +298,10 @@
             }
         ]
     },
-    "svcauth": {
-        "value": [
-            {
-                "rulename": "listener"
-            }
-        ]
-    },
     "queue": {
         "value": [
             {
                 "name": "orders"
-            }
-        ]
-    },
-    "queueauth": {
-        "value": [
-            {
-                "name": "sender"
             }
         ]
     },
