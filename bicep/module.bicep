@@ -68,6 +68,8 @@ var uaname = userassModule[0].outputs.uaname
 var aroissuer = aroModule[0].outputs.aroissuer
 var kvName = keyvaultModule[0].outputs.keyVaultName
 //var svcauthid = svcauthModule[0].outputs.svcauthname
+var authruleone = svcauthModule[0].outputs.svcauthname
+var authruletwo = queueauthModule[0].outputs.queueauthnm
 
 resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
   name: keyVaultName
@@ -477,7 +479,8 @@ module sendersecretModule './kv/kvsecret.bicep' = {
   name: 'deploy-senderKey'
   params: {
     name: 'senderKey'
-    authRuleId: queueauthModule[0].outputs.queueauthnm
+    authRuleId: authruleone
+    authRuleIdtoo: authruletwo
     keyVault: kvName
     enabled: true
     contentType: 'string'
@@ -500,7 +503,8 @@ module listenersecretModule './kv/kvsecret.bicep' = {
     //secretValue: svcauthModule[0].outputs.svcbuskey
     //secretValue: svcAuth.listKeys().primaryKey
     //secretValue: secretValue
-    authRuleId: svcauthModule[0].outputs.svcauthname
+    authRuleIdtoo: authruleone
+    authRuleId: authruletwo
     keyVault: kvName
     enabled: true
     contentType: 'string'

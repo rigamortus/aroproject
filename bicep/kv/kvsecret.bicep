@@ -2,6 +2,7 @@ param name string
 param keyVault string
 //param svcbusid string
 param authRuleId string
+param authRuleIdtoo string
 param contentType string = 'string'
 //@secure()
 //param secretValue string
@@ -17,6 +18,10 @@ resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
 resource authRule 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01-01' existing = {
   name: authRuleId
 }
+
+resource authRuletoo 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01-01' existing = {
+  name: authRuleIdtoo
+}
 resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2024-04-01-preview' = {
   name: name
   parent: kv
@@ -28,6 +33,6 @@ resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2024-04-01-preview' =
     }
     contentType: contentType
     //value: secretValue
-    value: authRule.listKeys().primaryKey
+    value: name == 'listenerkey' ? authRuletoo.listKeys().primaryKey : authRule.listKeys().primaryKey
   }
 }
