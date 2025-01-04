@@ -41,7 +41,7 @@
     "keyvaults": {
         "value": [
             {
-                "name": "aro-kv-victor",
+                "name": "aro-kv-victo",
                 "location": "North Europe",
                 "sku": "Standard",
                 "tenantId": "215b7ce2-5263-4593-a622-da030405d151",
