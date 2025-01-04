@@ -494,6 +494,7 @@ module sendersecretModule './kv/kvsecret.bicep' = {
 //var secretValue = svcAuth.listKeys().primaryKey
 module listenersecretModule './kv/kvsecret.bicep' = {
   name: 'deploy-listenerkey'
+  dependsOn: [sendersecretModule]
   params: {
     name: 'listenerkey'
     //secretValue: svcauthModule[0].outputs.svcbuskey
@@ -504,5 +505,6 @@ module listenersecretModule './kv/kvsecret.bicep' = {
     enabled: true
     contentType: 'string'
     exp: 0
+    nbf: 0
   }
 }
