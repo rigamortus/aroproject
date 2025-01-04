@@ -9,9 +9,9 @@ param privdns array
 param privlink array
 param privatendpoints array
 param svcbus array
-param svcauth array
+//param svcauth array
 param queue array
-param queueauth array
+//param queueauth array
 param cosmosaccount array
 param cosmosdb array
 param mongoconfig array
@@ -68,8 +68,8 @@ var uaname = userassModule[0].outputs.uaname
 var aroissuer = aroModule[0].outputs.aroissuer
 var kvName = keyvaultModule[0].outputs.keyVaultName
 //var svcauthid = svcauthModule[0].outputs.svcauthname
-var authruleone = svcauthModule[0].outputs.svcauthname
-var authruletwo = queueauthModule[0].outputs.queueauthnm
+var authruleone = svcauthModule.outputs.svcauthname
+var authruletwo = queueauthModule.outputs.queueauthnm
 
 resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
   name: keyVaultName
@@ -288,16 +288,25 @@ module svcbusModule './servicebus/svcbus.bicep' = [
   }
 ]
 
-module svcauthModule './svcbusauth/svcbusauth.bicep' = [
-  for auth in svcauth: {
-    name: 'deploy-${auth.rulename}'
+// module svcauthModule './svcbusauth/svcbusauth.bicep' = [
+//   for auth in svcauth: {
+//     name: 'deploy-${auth.rulename}'
+//     dependsOn: svcbusModule
+//     params: {
+//       rulename: auth.rulename
+//       svcbusname: svcbusname
+//     }
+//   }
+// ]
+param rulename string = 'listener'
+module svcauthModule './svcbusauth/svcbusauth.bicep' = {
+    name: 'deploy-${rulename}'
     dependsOn: svcbusModule
     params: {
-      rulename: auth.rulename
+      rulename: rulename
       svcbusname: svcbusname
     }
-  }
-]
+}
 
 module queueModule './queue/queue.bicep' = [
   for svcqueue in queue: {
@@ -310,17 +319,30 @@ module queueModule './queue/queue.bicep' = [
   }
 ]
 
-module queueauthModule './queueauth/auth.bicep' = [
-  for auth in queueauth: {
-    name: 'deploy-${auth.name}'
+// module queueauthModule './queueauth/auth.bicep' = [
+//   for auth in queueauth: {
+//     name: 'deploy-${auth.name}'
+//     dependsOn: queueModule
+//     params: {
+//       queueauthname: auth.name
+//       queuenm: '${svcbusname}/${queuenm}'
+//       //keyVault: kvName
+//     }
+//   }
+// ]
+
+param sendername string = 'sender'
+
+module queueauthModule './queueauth/auth.bicep' = {
+    name: 'deploy-${sendername}'
     dependsOn: queueModule
     params: {
-      queueauthname: auth.name
+      queueauthname: sendername
       queuenm: '${svcbusname}/${queuenm}'
       //keyVault: kvName
     }
-  }
-]
+}
+
 module cosmosaccModule './cosmos/cosmosacc.bicep' = [
   for acc in cosmosaccount: {
     name: 'deploy-${acc.name}'
