@@ -87,7 +87,8 @@ stages:
                 az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters @$(parametersFile)
   
   - stage: DockerBuild
-    dependsOn: BicepDeploy
+    #dependsOn: BicepDeploy
+    dependsOn: BicepInfrastructureScan
     jobs:
       - job: SonarAnalysis
         displayName: Perform Sonar Cloud Analysis
