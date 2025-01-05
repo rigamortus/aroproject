@@ -1,4 +1,3 @@
-var deploy = 'true'
 param name string
 param location string
 param visibility string
@@ -17,13 +16,7 @@ param clientsecret string
 param workerSubnetId string
 @secure()
 param pullsecret string
-output aroid string = arobicep.id
-output aroname string = arobicep.name
-output aropr string = arobicep.properties.clusterProfile.domain
-output aroissuer string = arobicep.properties.apiserverProfile.url
-
-
-
+var deploy = 'true'
 
 resource arobicep 'Microsoft.RedHatOpenShift/openShiftClusters@2023-04-01' = if (deploy == 'true') {
   name: name 
@@ -66,3 +59,8 @@ resource arobicep 'Microsoft.RedHatOpenShift/openShiftClusters@2023-04-01' = if 
     }
   }
 }
+
+output aroid string = arobicep.id
+output aroname string = arobicep.name
+output aropr string = arobicep.properties.clusterProfile.domain
+output aroissuer string = arobicep.properties.apiserverProfile.url

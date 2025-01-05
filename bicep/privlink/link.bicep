@@ -13,6 +13,7 @@ resource kv 'Microsoft.Network/privateDnsZones@2024-06-01' existing = {
 }
 
 resource linkdns 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (name == 'acrvnetlink') {
+  parent: acr
   name: name
   location: location
   properties: {
@@ -21,10 +22,10 @@ resource linkdns 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-
     }
     registrationEnabled: false
   }
-  parent: acr
 }
 
 resource kvlinkdns 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (name == 'kv-vnet-link') {
+  parent: kv
   name: name
   location: location
   properties: {
@@ -33,5 +34,4 @@ resource kvlinkdns 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-0
     }
     registrationEnabled: false
   }
-  parent: kv
 }

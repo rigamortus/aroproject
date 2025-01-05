@@ -2,7 +2,7 @@ param name string
 param addressprefix string
 param vnetName string
 param nsgid string
-output id string = arosubnet.id
+
 
 resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   name: vnetName
@@ -10,8 +10,8 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
 
 
 resource arosubnet 'Microsoft.Network/virtualNetworks/subnets@2024-03-01' = {
-  name: name
   parent: vnet
+  name: name
   properties: { 
     addressPrefix: addressprefix
     serviceEndpoints: name == 'acr-kv-subnet' ? [
@@ -32,3 +32,5 @@ resource arosubnet 'Microsoft.Network/virtualNetworks/subnets@2024-03-01' = {
     }
   }
 }
+
+output id string = arosubnet.id

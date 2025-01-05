@@ -10,7 +10,7 @@ COPY package*.json ./
 
 COPY . .
 
-RUN npm install \
+RUN npm install --ignore-scripts \
     && npm run build
 
 FROM nginx:${NGINX_VERSION}-alpine-slim AS runner

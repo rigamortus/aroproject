@@ -37,11 +37,11 @@ param grafroles array = [
     principal: 'ServicePrincipal'
   }
 ]
+param rulename string = 'listener'
+param sendername string = 'sender'
 param principalId string = '4c8fc9f7-21c3-4d54-a704-58b2a06dbb3c'
 param grafanaAdminRole string = '/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/22926164-76b3-42b3-bc55-97df8dab3e41'
 var nsgid = nsgModule[0].outputs.nsgid
-output masterSubnetId string = subnetModule1.outputs.id
-output vnetname string = vnetModule[0].outputs.vnetname
 var vnetName = vnetModule[0].outputs.vnetname
 var masterSubnetId = subnetModule1.outputs.id
 var workerSubnetId = subnetModule2.outputs.id
@@ -71,9 +71,10 @@ var kvName = keyvaultModule[0].outputs.keyVaultName
 var authruleone = svcauthModule.outputs.svcauthname
 var authruletwo = queueauthModule.outputs.queueauthnm
 
+
 resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
-  name: keyVaultName
   scope: resourceGroup(subscriptionId, 'myrg')
+  name: keyVaultName
 }
 
 module vnetModule './vnets/vnet.bicep' = [
@@ -298,7 +299,6 @@ module svcbusModule './servicebus/svcbus.bicep' = [
 //     }
 //   }
 // ]
-param rulename string = 'listener'
 module svcauthModule './svcbusauth/svcbusauth.bicep' = {
     name: 'deploy-${rulename}'
     dependsOn: svcbusModule
@@ -347,7 +347,6 @@ module queueModule './queue/queue.bicep' = [
   //         }
   //     ]
   // },
-param sendername string = 'sender'
 
 module queueauthModule './queueauth/auth.bicep' = {
     name: 'deploy-${sendername}'
@@ -550,3 +549,6 @@ module listenersecretModule './kv/kvsecret.bicep' = {
     nbf: 0
   }
 }
+
+output masterSubnetId string = subnetModule1.outputs.id
+output vnetname string = vnetModule[0].outputs.vnetname

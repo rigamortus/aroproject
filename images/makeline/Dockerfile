@@ -10,7 +10,7 @@ COPY . /app
 
 RUN go build -ldflags "-X main.version=$APP_VERSION" -o main .
 
-FROM alpine:latest AS runner
+FROM alpine:3.19.1 AS runner
 
 ARG UID=1001
 RUN adduser \

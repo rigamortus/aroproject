@@ -5,7 +5,6 @@ param access string
 param location string
 param bypass string
 param networkRuleSet object
-output acrname string = aroacr.id
 
 resource aroacr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: name
@@ -26,3 +25,5 @@ resource aroacr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
     }
   }
 }
+
+output acrname string = aroacr.id

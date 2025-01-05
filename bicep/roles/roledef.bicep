@@ -3,6 +3,15 @@ param uaidentity string
 param svcbusname string
 param subscriptionId string = '01865a64-1974-4037-8780-90e5bebf910e'
 param svcbusroledef string ='090c5cfd-751d-490a-894a-3ce6f1109419'
+var roledefid = roleDefinition.id
+
+resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
+  name: svcbusname
+}
+
+resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
+  name: cosmosacc
+}
 
 resource roleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-11-15' = {
   parent: cosmos
@@ -25,17 +34,10 @@ resource roleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinition
   }
 }
 
-resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = {
-  name: cosmosacc
-}
-
-output id string = roleDefinition.id
-var roledefid = roleDefinition.id
-
 
 resource cosmosrole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscriptionId, uaidentity, roledefid)
   scope: cosmos 
+  name: guid(subscriptionId, uaidentity, roledefid)
   properties: {
     principalId: uaidentity
     roleDefinitionId: roledefid
@@ -43,14 +45,14 @@ resource cosmosrole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 resource svcbusroleassignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscriptionId, uaidentity, svcbusroledef)
   scope: serviceBus
+  name: guid(subscriptionId, uaidentity, svcbusroledef)
   properties: {
     principalId: uaidentity
     roleDefinitionId: svcbusroledef
   }
 }
 
-resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
-  name: svcbusname
-}
+
+
+output id string = roleDefinition.id

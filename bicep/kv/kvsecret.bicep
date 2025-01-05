@@ -23,8 +23,8 @@ resource authRuletoo 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01
   name: authRuleIdtoo
 }
 resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2024-04-01-preview' = {
-  name: name
   parent: kv
+  name: name
   properties: {
     attributes: {
       enabled: enabled

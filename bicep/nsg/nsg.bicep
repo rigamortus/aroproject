@@ -1,7 +1,6 @@
 param name string
 param location string
 param securityRules array
-output nsgid string = nsgbicep.id
 
 resource nsgbicep 'Microsoft.Network/networkSecurityGroups@2024-03-01' = {
   name: name
@@ -22,3 +21,5 @@ resource nsgbicep 'Microsoft.Network/networkSecurityGroups@2024-03-01' = {
     }]
   }
 }
+
+output nsgid string = nsgbicep.id

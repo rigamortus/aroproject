@@ -9,7 +9,7 @@ COPY package*.json ./
 
 COPY . .
 
-RUN npm install \
+RUN npm install --ignore-scripts \
     && npm run build
 
 ARG NGINX_VERSION=stable

@@ -7,8 +7,8 @@ resource uaid 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-previ
   name: uaname
 }
 resource federatedCredential 'Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials@2023-01-31' = {
-  name: 'kubernetes-federated-credential'
   parent: uaid
+  name: 'kubernetes-federated-credential'
   properties: {
     audiences: [
       'api://AzureADTokenExchange'

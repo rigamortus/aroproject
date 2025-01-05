@@ -14,7 +14,7 @@ RUN cargo build --release
 RUN rm src/*.rs
 
 # Copy the source files to the container
-ADD . ./
+COPY . ./
 
 # Remove the dummy target directory created by cargo
 RUN rm ./target/release/deps/virtual_worker*
@@ -41,7 +41,7 @@ WORKDIR /app
 ARG APP_VERSION=1.0
 
 # Install OpenSSL
-RUN apt-get update && apt-get install -y libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get --no-install-recommends install -y libssl-dev && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder stage
 COPY --from=builder /virtual-worker/target/release/virtual-worker /app

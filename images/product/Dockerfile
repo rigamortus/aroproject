@@ -10,7 +10,7 @@ RUN USER=root cargo new --bin product-service
 WORKDIR /product-service
 
 # Copy the source files to the container
-ADD . ./
+COPY . ./
 
 # Build the application
 RUN cargo build --release
@@ -47,7 +47,7 @@ RUN adduser \
 ARG APP_VERSION=1.0
 
 # Not ideal but needed to execute health checks in docker-compose
-RUN apt-get update && apt-get install -y wget libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get --no-install-recommends install -y wget libssl-dev && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder stage
 COPY --from=builder /product-service/target/release/product-service /app

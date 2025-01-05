@@ -9,7 +9,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN apk update && \
-    apk add --no-cache gcc g++ musl-dev libffi-dev
+    apk add --no-cache g++ gcc libffi-dev musl-dev
 
 RUN pip install --no-cache-dir -r requirements.txt
 

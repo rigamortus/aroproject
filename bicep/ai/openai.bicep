@@ -13,6 +13,7 @@ resource aiacc 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
 resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   parent: aiacc
   name: name
+  sku: sku
   properties: {
     model: {
       format: format
@@ -21,5 +22,4 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01
     }
     //raiPolicyName: empty(raiPolicyName) ? null : raiPolicyName
   }
-  sku: sku
 }

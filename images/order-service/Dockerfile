@@ -12,7 +12,7 @@ ARG APP_VERSION=1.0
 COPY package*.json ./
 
 # Install app dependencies
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Copy the rest of the app source code to the container
 COPY . .
@@ -37,7 +37,7 @@ COPY --from=builder /app .
 ARG APP_VERSION=1.0
 
 # Install only production dependencies
-RUN npm install --production
+RUN npm install --ignore-scripts --production
 
 # Expose the port the app listens on
 EXPOSE 3000

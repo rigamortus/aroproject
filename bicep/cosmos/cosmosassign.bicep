@@ -7,8 +7,8 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-09-01-preview
 }
 
 resource cosmosassign 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-09-01-preview' = {
-  name: guid(roleDefinitionId, principalId, cosmosAccount.id)
   parent: cosmosAccount
+  name: guid(roleDefinitionId, principalId, cosmosAccount.id)
   properties: {
     principalId: principalId
     roleDefinitionId: roleDefinitionId

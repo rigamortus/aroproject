@@ -6,15 +6,15 @@ param location string
 param locations array
 param capability array
 param serverversion string
-output name string = cosmosAccount.name
-output connectionStringKey string = connectionStringKey
-output endpoint string = cosmosAccount.properties.documentEndpoint
-output id string = cosmosAccount.id
+
+resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
+  name: keyVault
+}
 
 resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   name: name
-  kind: kind
   location: location
+  kind: kind
   properties: {
     databaseAccountOfferType: 'Standard'
     locations: [ for loc in locations: {
@@ -44,6 +44,7 @@ resource cosmosConnectionString 'Microsoft.KeyVault/vaults/secrets@2023-07-01' =
   }
 }
 
-resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
-  name: keyVault
-}
+output name string = cosmosAccount.name
+output connectionStringKey string = connectionStringKey
+output endpoint string = cosmosAccount.properties.documentEndpoint
+output id string = cosmosAccount.id

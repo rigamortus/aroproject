@@ -8,7 +8,6 @@ param name string
 param nodename string
 //param monitorName string
 param grafaname string
-output grafanaid string = grafana.identity.principalId
 
 resource monitorDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'MSCI-${clusterName}'
@@ -92,6 +91,9 @@ resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2023
 resource grafana 'Microsoft.Dashboard/grafana@2023-09-01' = { 
   name: grafaname
   location: location
+  sku: {
+    name: 'Standard'
+  }
   identity: {
     type: 'SystemAssigned'
   }
@@ -103,9 +105,6 @@ resource grafana 'Microsoft.Dashboard/grafana@2023-09-01' = {
         }
       ]
     }
-  }
-  sku: {
-    name: 'Standard'
   }
 }
 
@@ -268,4 +267,5 @@ resource k8sPrometheusRuleGroup 'Microsoft.AlertsManagement/prometheusRuleGroups
   }
 }
 
+output grafanaid string = grafana.identity.principalId
 

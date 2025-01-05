@@ -18,7 +18,7 @@ RUN cargo build --release
 RUN rm src/*.rs
 
 # Copy the source files to the container
-ADD . ./
+COPY . ./
 
 # Remove the dummy target directory created by cargo
 RUN rm ./target/release/deps/virtual_customer*
@@ -35,7 +35,10 @@ WORKDIR /app
 ARG APP_VERSION=1.0
 
 ARG UID=1001
-RUN adduser \
+RUN apt-get update \
+    && apt-get --no-install-recommends install -y libssl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && adduser \
     --disabled-password \
     --gecos "" \
     --home "/nonexistent" \
@@ -45,7 +48,7 @@ RUN adduser \
     appuser
 
 # Install OpenSSL
-RUN apt-get update && apt-get install -y libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN 
 
 # Copy the binary from the builder stage
 COPY --from=builder /virtual-customer/target/release/virtual-customer /app

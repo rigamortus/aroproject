@@ -6,8 +6,6 @@ param diskencrypt bool
 param purge bool
 param networkAcls object
 param accessPolicies array
-output kvid string = keyVault.id
-output keyVaultName string = keyVault.name
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
   name: name
@@ -38,3 +36,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
     ]
   }
 }
+
+output kvid string = keyVault.id
+output keyVaultName string = keyVault.name
