@@ -20,6 +20,7 @@ pool:
 
 stages:
   - stage: BicepInfrastructureScan
+    condition: eq(variables['APPLY'], 'yes')
     jobs:
       - job: BicepScan
         displayName: Scan and Run What-If
@@ -93,6 +94,8 @@ stages:
       - job: SonarAnalysis
         displayName: Perform Sonar Cloud Analysis
         steps:
+        - checkout: self
+          fetchDepth: '0'
         - task: SonarCloudPrepare@3
           inputs:
             SonarQube: 'sonar'
