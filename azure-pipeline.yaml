@@ -108,9 +108,11 @@ stages:
         - task: dependency-check-build-task@6
           inputs:
             projectName: 'ARO-Project'
-            scanPath: 'images/*'
+            scanPath: '$(Build.SourcesDirectory)/images/**'
             format: 'ALL'
             uploadReports: true
             uploadSARIFReport: true
             failOnCVSS: '7'
+            reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
+            nvdApiKey: '$(NVD_KEY)'
         
