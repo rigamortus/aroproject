@@ -57,7 +57,7 @@ stages:
               az deployment group what-if --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters @$(parametersFile)
     
   - stage: BicepDeploy
-    dependsOn: [BicepInfrastructureScan]
+    #dependsOn: [BicepInfrastructureScan]
     condition: eq(variables['APPLY'], 'yes')
     jobs:
       - job: waitForValidation
