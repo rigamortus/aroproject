@@ -89,7 +89,7 @@ stages:
   
   - stage: DockerBuild
     #dependsOn: BicepDeploy
-    dependsOn: BicepInfrastructureScan
+    #dependsOn: BicepInfrastructureScan
     jobs:
       - job: SonarAnalysis
         displayName: Perform Sonar Cloud Analysis
