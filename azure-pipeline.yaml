@@ -113,7 +113,7 @@ stages:
             mkdir -p $(Agent.TempDirectory)/dependency-check/data
             java -jar dependency-check.jar --updateonly --nvdApiKey $(NVD_KEY)
           displayName: 'Initialize NVD Database'
-  timeoutInMinutes: 20
+          timeoutInMinutes: 20
         - task: dependency-check-build-task@6
           inputs:
             projectName: 'ARO-Project'
