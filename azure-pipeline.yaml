@@ -123,5 +123,5 @@ stages:
             uploadSARIFReport: true
             failOnCVSS: '7'
             reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
-            nvdApiKey: '$(NVD_KEY)'
+            nvdApiKey: $(NVD_KEY)
         
