@@ -47,9 +47,6 @@ RUN apt-get update \
     --uid "${UID}" \
     appuser
 
-# Install OpenSSL
-RUN 
-
 # Copy the binary from the builder stage
 COPY --from=builder /virtual-customer/target/release/virtual-customer /app
 
