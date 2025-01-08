@@ -6,7 +6,7 @@ WORKDIR /app
 
 ARG APP_VERSION=1.0
 
-COPY . /app
+COPY cosmosdb.go main.go mongodb.go orderqueue.go orders.go go.mod go.sum /app/
 
 RUN go build -ldflags "-X main.version=$APP_VERSION" -o main .
 
