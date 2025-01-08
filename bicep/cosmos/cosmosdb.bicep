@@ -5,6 +5,9 @@ param deploy bool = false
 
 resource cosmosdb 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-09-01-preview' =  if (deploy) {
   name: name
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     resource: {
       id: id
@@ -12,6 +15,9 @@ resource cosmosdb 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-09-01
   }
   resource comsmoscontainers 'containers' = [for container in containers: {
     name: container.name
+    identity: {
+      type: 'SystemAssigned'
+    }
     properties: {
       resource: {
         id: container.id

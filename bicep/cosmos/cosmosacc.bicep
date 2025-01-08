@@ -15,6 +15,9 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   name: name
   location: location
   kind: kind
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     databaseAccountOfferType: 'Standard'
     locations: [ for loc in locations: {

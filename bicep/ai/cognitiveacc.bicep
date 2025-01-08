@@ -15,6 +15,9 @@ resource openai 'Microsoft.CognitiveServices/accounts@2024-10-01' = {
     publicNetworkAccess: 'Enabled'
     networkAcls: acls
   }
+  identity: {
+    type: 'SystemAssigned'
+  }
 }
 
 output aiaccount string = openai.name

@@ -15,6 +15,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
       family: 'A'
       name: sku
     }
+    enableRbacAuthorization: true
     tenantId: tenantId
     enabledForDiskEncryption: diskencrypt
     enablePurgeProtection: purge

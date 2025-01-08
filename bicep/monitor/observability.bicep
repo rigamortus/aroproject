@@ -11,6 +11,9 @@ param grafaname string
 
 resource monitorDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'MSCI-${clusterName}'
+  identity: {
+    type: 'SystemAssigned'
+  }
   location: location
   kind: 'Linux'
   properties: {
@@ -63,6 +66,9 @@ resource monitorDataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-
 
 resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2023-03-11' = {
   name: 'MSProm-${clusterName}'
+  identity: {
+    type: 'SystemAssigned'
+  }
   location: location
   kind: 'Linux'
   properties: {}

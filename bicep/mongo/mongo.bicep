@@ -5,6 +5,9 @@ param collections array
 
 resource aromongo 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2024-09-01-preview' = {
   name: name
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     resource: {
       id: id
@@ -15,6 +18,9 @@ resource aromongo 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2024-0
   }
   resource list 'collections' = [ for collection in collections: {
     name: collection.name
+    identity: {
+      type: 'SystemAssigned'
+    }
     properties: {
       resource: {
         id: collection.id

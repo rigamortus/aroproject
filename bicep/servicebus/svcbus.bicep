@@ -6,6 +6,9 @@ param sku string
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
   name: name
+  identity: {
+    type: 'SystemAssigned'
+  }
   location: location
   sku: {
     name: sku

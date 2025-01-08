@@ -15,7 +15,7 @@ COPY package*.json ./
 RUN npm install --ignore-scripts
 
 # Copy the rest of the app source code to the container
-COPY . .
+COPY -r app.js plugins/ routes/ ./
 
 FROM node:${NODE_VERSION} AS runner
 

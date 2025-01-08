@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 
-COPY . .
+COPY -r babel.confif.js jsconfig.json vue.config.js public/ src/ nginx.conf ./
 
 RUN npm install --ignore-scripts \
     && npm run build

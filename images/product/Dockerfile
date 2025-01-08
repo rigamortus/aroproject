@@ -10,7 +10,7 @@ RUN USER=root cargo new --bin product-service
 WORKDIR /product-service
 
 # Copy the source files to the container
-COPY . ./
+COPY -r Cargo.* config.yml crates/ src/ rule_engine.wit ./
 
 # Build the application
 RUN cargo build --release

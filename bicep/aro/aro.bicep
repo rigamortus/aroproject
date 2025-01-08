@@ -39,7 +39,7 @@ resource arobicep 'Microsoft.RedHatOpenShift/openShiftClusters@2023-04-01' = if 
     masterProfile: {
       subnetId: masterSubnetId
       vmSize: vm
-      encryptionAtHost: 'Disabled'
+      encryptionAtHost: 'Enabled'
     }
     workerProfiles: [ for profile in workerProfiles : {
       count: profile.count

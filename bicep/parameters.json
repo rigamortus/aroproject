@@ -127,7 +127,7 @@
                         "disksize": 128,
                         "name": "worker",
                         "vmsize": "Standard_D4s_v3",
-                        "encryption": "Disabled"
+                        "encryption": "Enabled"
                     }
                 ],
                 "podcidr": "10.240.0.0/16",

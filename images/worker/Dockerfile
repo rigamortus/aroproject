@@ -2,19 +2,17 @@ ARG RUST_VERSION=1.80
 ARG RUNNER_VERSION=bookworm-slim
 
 FROM rust:${RUST_VERSION} AS builder
+
 RUN USER=root cargo new --bin virtual-worker
 
 WORKDIR /virtual-worker
 
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml Cargo.lock src/ ./
 
 RUN cargo build --release
 
 # Remove the .rs files created by cargo
 RUN rm src/*.rs
-
-# Copy the source files to the container
-COPY . ./
 
 # Remove the dummy target directory created by cargo
 RUN rm ./target/release/deps/virtual_worker*
