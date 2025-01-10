@@ -39,6 +39,8 @@ param grafroles array = [
 ]
 param rulename string = 'listener'
 param sendername string = 'sender'
+param senderkeyname string = 'senderKey'
+param listenerkeyname string = 'listenerkey'
 param principalId string = '4c8fc9f7-21c3-4d54-a704-58b2a06dbb3c'
 param grafanaAdminRole string = '/subscriptions/01865a64-1974-4037-8780-90e5bebf910e/providers/Microsoft.Authorization/roleDefinitions/22926164-76b3-42b3-bc55-97df8dab3e41'
 var nsgid = nsgModule[0].outputs.nsgid
@@ -68,8 +70,8 @@ var uaname = userassModule[0].outputs.uaname
 var aroissuer = aroModule[0].outputs.aroissuer
 var kvName = keyvaultModule[0].outputs.keyVaultName
 //var svcauthid = svcauthModule[0].outputs.svcauthname
-var authruleone = svcauthModule.outputs.svcauthname
-var authruletwo = queueauthModule.outputs.queueauthnm
+//var authruleone = svcauthModule.outputs.svcauthname
+//var authruletwo = queueauthModule.outputs.queueauthnm
 
 
 resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
@@ -354,6 +356,7 @@ module queueauthModule './queueauth/auth.bicep' = {
     params: {
       queueauthname: sendername
       queuenm: '${svcbusname}/${queuenm}'
+
       //keyVault: kvName
     }
 }
@@ -512,12 +515,25 @@ module roleAssignmentForMe './roles/roles.bicep' = {
   }
 }
 
+//var authruleone = servicebusauth.name
+//var authruletwo = queueauthentication.name
+
+// resource servicebusauth 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01-01' existing = {
+//   name: svcauthModule.outputs.svcauthname
+// }
+
+// resource queueauthentication 'Microsoft.ServiceBus/namespaces/queues/authorizationRules@2024-01-01' existing = {
+//   name: queueauthModule.outputs.queueauthnm
+// }
+
+
 module sendersecretModule './kv/kvsecret.bicep' = {
   name: 'deploy-senderKey'
+  dependsOn: [svcauthModule]
   params: {
-    name: 'senderKey'
-    authRuleId: authruleone
-    authRuleIdtoo: authruletwo
+    name: senderkeyname
+    authRuleId: '${svcbusname}/${svcauthModule.outputs.svcauthname}'
+    authRuleIdtoo: '${svcbusname}/${queuenm}/${queueauthModule.outputs.queueauthnm}'
     keyVault: kvName
     enabled: true
     contentType: 'string'
@@ -536,12 +552,12 @@ module listenersecretModule './kv/kvsecret.bicep' = {
   name: 'deploy-listenerkey'
   dependsOn: [sendersecretModule]
   params: {
-    name: 'listenerkey'
+    name: listenerkeyname
     //secretValue: svcauthModule[0].outputs.svcbuskey
     //secretValue: svcAuth.listKeys().primaryKey
     //secretValue: secretValue
-    authRuleIdtoo: authruleone
-    authRuleId: authruletwo
+    authRuleId: '${svcbusname}/${svcauthModule.outputs.svcauthname}'
+    authRuleIdtoo: '${svcbusname}/${queuenm}/${queueauthModule.outputs.queueauthnm}'
     keyVault: kvName
     enabled: true
     contentType: 'string'

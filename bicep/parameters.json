@@ -41,7 +41,7 @@
     "keyvaults": {
         "value": [
             {
-                "name": "aro-kv-victo",
+                "name": "aro-kv-deb",
                 "location": "North Europe",
                 "sku": "Standard",
                 "tenantId": "215b7ce2-5263-4593-a622-da030405d151",
@@ -127,7 +127,7 @@
                         "disksize": 128,
                         "name": "worker",
                         "vmsize": "Standard_D4s_v3",
-                        "encryption": "Enabled"
+                        "encryption": "Disabled"
                     }
                 ],
                 "podcidr": "10.240.0.0/16",

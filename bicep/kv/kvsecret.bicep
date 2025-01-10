@@ -19,7 +19,7 @@ resource authRule 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01-01
   name: authRuleId
 }
 
-resource authRuletoo 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01-01' existing = {
+resource authRuletoo 'Microsoft.ServiceBus/namespaces/queues/AuthorizationRules@2024-01-01' existing = {
   name: authRuleIdtoo
 }
 resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2024-04-01-preview' = {
