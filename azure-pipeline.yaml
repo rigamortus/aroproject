@@ -123,7 +123,7 @@ stages:
             failOnCVSS: '7'
             reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
             #nvdApiKey: $(NVD_KEY)
-            
+
         - script: |
             find images -name Dockerfile > dockerfiles.txt
           displayName: 'Find all Dockerfiles'
@@ -142,10 +142,9 @@ stages:
             inputs:
               containerRegistry: '$(dockerRegistryServiceConnection)'
               repository: '$(imageRepository)/$(basename $(dirname ${{ dockerfile }}))'
-              command: 'buildAndPush'
+              command: 'build'
               Dockerfile: '${{ dockerfile }}'
-              tags: |
-                $(tag)
+              tags: '$(tag)'
         - task: SnykSecurityScan@1
           inputs:
             serviceConnectionEndpoint: 'snyk'
