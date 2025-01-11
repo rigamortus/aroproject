@@ -120,4 +120,9 @@ stages:
             reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
             #nvdApiKey: $(NVD_KEY)
         
+        - task: Docker@2
+          inputs:
+            command: 'build'
+            Dockerfile: '**/Dockerfile'
+            buildContext: 'images/**/'
         
