@@ -109,11 +109,6 @@ stages:
         - task: SonarCloudPublish@3
           inputs:
             pollingTimeoutSec: '300'
-        # - script: |
-        #     mkdir -p $(Agent.TempDirectory)/dependency-check/data
-        #     java -jar dependency-check.jar --updateonly --nvdApiKey $(NVD_KEY)
-        #  displayName: 'Initialize NVD Database'
-        #  timeoutInMinutes: 20
         - task: dependency-check-build-task@6
           inputs:
             projectName: 'ARO-Project'
@@ -124,4 +119,5 @@ stages:
             failOnCVSS: '7'
             reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
             #nvdApiKey: $(NVD_KEY)
+        
         
