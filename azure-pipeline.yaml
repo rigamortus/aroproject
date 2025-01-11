@@ -6,7 +6,8 @@ variables:
   resourceGroupName: 'myrg'
   templateFile: '$(System.DefaultWorkingDirectory)/bicep/module.bicep'
   parametersFile: '$(System.DefaultWorkingDirectory)/bicep/parameters.json'
-
+  imageRepository: 'myrepository'
+  tag: '$(Build.BuildId)'
 
 parameters:
 - name: APPLY
@@ -15,6 +16,9 @@ parameters:
   values:
     - 'yes'
     - 'no'
+- name: dockerfiles
+  type: object
+  default: []
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -119,10 +123,36 @@ stages:
             failOnCVSS: '7'
             reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
             #nvdApiKey: $(NVD_KEY)
-        
-        - task: Docker@2
+            
+        - script: |
+            find images -name Dockerfile > dockerfiles.txt
+          displayName: 'Find all Dockerfiles'
+
+        - script: |
+            dockerfiles=()
+            while IFS= read -r dockerfile; do
+              dockerfiles+=($dockerfile)
+            done < dockerfiles.txt
+            echo "##vso[task.setvariable variable=dockerfiles;isOutput=true]${dockerfiles[@]}"
+          displayName: 'Set dockerfiles variable'
+
+        - ${{ each dockerfile in parameters.dockerfiles }}:
+          - task: Docker@2
+            displayName: 'Build and push Docker image ${{ dockerfile }}'
+            inputs:
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              repository: '$(imageRepository)/$(basename $(dirname ${{ dockerfile }}))'
+              command: 'buildAndPush'
+              Dockerfile: '${{ dockerfile }}'
+              tags: |
+                $(tag)
+        - task: SnykSecurityScan@1
           inputs:
-            command: 'build'
-            Dockerfile: '**/Dockerfile'
-            buildContext: 'images/**/'
+            serviceConnectionEndpoint: 'snyk'
+            testType: 'container'
+            severityThreshold: 'medium'
+            monitorWhen: 'always'
+            failOnIssues: true
+            projectName: 'rigamortus'
+            organization: 'ARO-PROJECT'
         
