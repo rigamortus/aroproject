@@ -125,7 +125,7 @@ stages:
             #nvdApiKey: $(NVD_KEY)
 
         - script: |
-            find images -name Dockerfile > dockerfiles.txt
+            find images/**/ -name Dockerfile > dockerfiles.txt
           displayName: 'Find all Dockerfiles'
 
         - script: |
@@ -137,21 +137,28 @@ stages:
           displayName: 'Set dockerfiles variable'
 
         - ${{ each dockerfile in parameters.dockerfiles }}:
+          - script: |
+                imageName=$(basename $(dirname ${{ dockerfile }}))
+                echo "##vso[task.setvariable variable=imageName;isOutput=true]$imageName"
+            displayName: 'Set imageName variable'
+
           - task: Docker@2
-            displayName: 'Build and push Docker image ${{ dockerfile }}'
+            displayName: 'Build Docker image ${{ dockerfile }}'
             inputs:
               containerRegistry: '$(dockerRegistryServiceConnection)'
-              repository: '$(imageRepository)/$(basename $(dirname ${{ dockerfile }}))'
+              repository: '$(imageRepository)/${{ imageName }}'
               command: 'build'
               Dockerfile: '${{ dockerfile }}'
-              tags: '$(tag)'
-        - task: SnykSecurityScan@1
-          inputs:
-            serviceConnectionEndpoint: 'snyk'
-            testType: 'container'
-            severityThreshold: 'medium'
-            monitorWhen: 'always'
-            failOnIssues: true
-            projectName: 'rigamortus'
-            organization: 'ARO-PROJECT'
-        
+              tags: |
+                $(tag)
+          - task: SnykSecurityScan@1
+            displayName: 'Snyk scan for ${{ imageName }}'
+            inputs:
+              serviceConnectionEndpoint: 'snyk'
+              testType: 'container'
+              severityThreshold: 'medium'
+              monitorWhen: 'always'
+              failOnIssues: true
+              projectName: 'rigamortus-${{ imageName }}'
+              organization: 'ARO-PROJECT'
+              dockerImageName: '$(imageRepository)/${{ imageName }}:$(tag)'
