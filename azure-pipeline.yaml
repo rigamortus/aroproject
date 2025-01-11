@@ -156,9 +156,9 @@ stages:
             inputs:
               serviceConnectionEndpoint: 'snyk'
               testType: 'container'
+              dockerImageName: '$(imageRepository)/${{ imageName }}:$(tag)'
               severityThreshold: 'medium'
               monitorWhen: 'always'
               failOnIssues: true
-              projectName: 'rigamortus-${{ imageName }}'
+              projectName: 'rigamortus'
               organization: 'ARO-PROJECT'
-              dockerImageName: '$(imageRepository)/${{ imageName }}:$(tag)'
