@@ -145,12 +145,12 @@ stages:
           - task: Docker@2
             displayName: 'Build Docker image ${{ dockerfile }}'
             inputs:
-              containerRegistry: '$(dockerRegistryServiceConnection)'
+              containerRegistry: 'docker'
               repository: '$(imageRepository)/${{ imageName }}'
               command: 'build'
               Dockerfile: '${{ dockerfile }}'
-              tags: |
-                $(tag)
+              tags: '$(tag)'
+          
           - task: SnykSecurityScan@1
             displayName: 'Snyk scan for ${{ imageName }}'
             inputs:
