@@ -129,30 +129,36 @@ stages:
           displayName: 'Find all Dockerfiles'
 
         - script: |
+            dockerfiles=()
+            i=0
             while IFS= read -r dockerfile; do
-              imageName=$(basename $(dirname "$dockerfile"))
-              echo "##vso[task.setvariable variable=currentDockerfile]$dockerfile"
-              echo "##vso[task.setvariable variable=imageName;isOutput=true]$imageName"
+              dockerfiles+=($dockerfile)
+              echo "##vso[task.setvariable variable=dockerfile_$i]$dockerfile"
+              imageName=$(basename $(dirname $dockerfile))
+              echo "##vso[task.setvariable variable=imageName_$i]$imageName"
+              i=$((i + 1))
             done < dockerfiles.txt
+            echo "##vso[task.setvariable variable=totalDockerfiles]$i"
           displayName: 'Process Dockerfiles'
-
-        - task: Docker@2
-          displayName: 'Build Docker image'
-          inputs:
-            containerRegistry: 'docker'
-            repository: 'docker.io/rigamortus/$(imageName)'
-            command: 'build'
-            Dockerfile: '$(currentDockerfile)'
-            tags: '$(tag)'
         
-        - task: SnykSecurityScan@1
-          displayName: 'Snyk scan'
-          inputs:
-            serviceConnectionEndpoint: 'snyk'
-            testType: 'container'
-            dockerImageName: 'docker.io/rigamortus/$(imageName):$(tag)'
-            severityThreshold: 'medium'
-            monitorWhen: 'always'
-            failOnIssues: true
-            projectName: 'rigamortus'
-            organization: 'ARO-PROJECT'
+        - ${{ each i in variables['totalDockerfiles'] }}:
+          - task: Docker@2
+            displayName: "Build Docker image ${{ format('imageName_{0}', i) }}"
+            inputs:
+              containerRegistry: 'docker'
+              repository: "docker.io/rigamortus/${{ format('imageName_{0}', i) }}"
+              command: 'build'
+              Dockerfile: "${{ format('dockerfile_{0}', i) }}"
+              tags: '$(tag)'
+
+          - task: SnykSecurityScan@1
+            displayName: "Snyk scan for ${{ format('imageName_{0}', i) }}"
+            inputs:
+              serviceConnectionEndpoint: 'snyk'
+              testType: 'container'
+              dockerImageName: "docker.io/rigamortus/${{ format('imageName_{0}', i) }}:$(tag)"
+              severityThreshold: 'medium'
+              monitorWhen: 'always'
+              failOnIssues: true
+              projectName: "rigamortus"
+              organization: 'ARO-PROJECT'
