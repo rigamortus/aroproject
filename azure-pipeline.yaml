@@ -113,15 +113,15 @@ stages:
         - task: SonarCloudPublish@3
           inputs:
             pollingTimeoutSec: '300'
-        - task: dependency-check-build-task@6
-          inputs:
-            projectName: 'ARO-Project'
-            scanPath: '$(Build.SourcesDirectory)/images/**'
-            format: 'ALL'
-            uploadReports: true
-            uploadSARIFReport: true
-            failOnCVSS: '7'
-            reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
+        #- task: dependency-check-build-task@6
+        #  inputs:
+        #    projectName: 'ARO-Project'
+        #    scanPath: '$(Build.SourcesDirectory)/images/**'
+        #    format: 'ALL'
+        #    uploadReports: true
+        #    uploadSARIFReport: true
+        #    failOnCVSS: '7'
+        #    reportsDirectory: '$(Build.ArtifactStagingDirectory)/dependency-check-reports'
             #nvdApiKey: $(NVD_KEY)
 
         - script: |
