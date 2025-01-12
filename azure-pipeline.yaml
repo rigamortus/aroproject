@@ -6,7 +6,7 @@ variables:
   resourceGroupName: 'myrg'
   templateFile: '$(System.DefaultWorkingDirectory)/bicep/module.bicep'
   parametersFile: '$(System.DefaultWorkingDirectory)/bicep/parameters.json'
-  imageRepository: 'docker.io/rigamortus'
+  imageRepository: 'rigamortus'
   tag: '$(Build.BuildId)'
 
 parameters:
