@@ -150,7 +150,7 @@ stages:
           inputs:
             serviceConnectionEndpoint: 'snyk'
             testType: 'container'
-            dockerImageName: 'docker.io/rigamortus/$(imageName):$(tag)'
+            dockerImageName: 'rigamortus/$(imageName):$(tag)'
             severityThreshold: 'medium'
             monitorWhen: 'always'
             failOnIssues: true
