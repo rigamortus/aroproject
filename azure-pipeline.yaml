@@ -140,7 +140,7 @@ stages:
           displayName: 'Build Docker image'
           inputs:
             containerRegistry: 'docker'
-            repository: '$(imageRepository)/$(imageName)'
+            repository: 'docker.io/rigamortus/$(imageName)'
             command: 'build'
             Dockerfile: '$(currentDockerfile)'
             tags: '$(tag)'
@@ -150,7 +150,7 @@ stages:
           inputs:
             serviceConnectionEndpoint: 'snyk'
             testType: 'container'
-            dockerImageName: 'rigamortus/$(imageName):$(tag)'
+            dockerImageName: 'docker.io/rigamortus/$(imageName):$(tag)'
             severityThreshold: 'medium'
             monitorWhen: 'always'
             failOnIssues: true
