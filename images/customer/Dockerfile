@@ -1,5 +1,5 @@
 ARG RUST_VERSION=1.80
-ARG RUNNER_VERSION=bookworm-slim
+ARG RUNNER_VERSION=oldstable-slim
 
 FROM rust:${RUST_VERSION} AS builder
 
@@ -16,6 +16,10 @@ RUN cargo build --release
 
 # Remove the .rs files created by cargo
 RUN rm src/*.rs
+
+COPY Cargo.toml Cargo.lock ./
+
+COPY src/ ./src/
 
 # Remove the dummy target directory created by cargo
 RUN rm ./target/release/deps/virtual_customer*

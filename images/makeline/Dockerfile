@@ -10,7 +10,8 @@ COPY cosmosdb.go main.go mongodb.go orderqueue.go orders.go go.mod go.sum /app/
 
 RUN go build -ldflags "-X main.version=$APP_VERSION" -o main .
 
-FROM alpine:3.19.1 AS runner
+FROM busybox:1.36.1 AS runner
+
 
 ARG UID=1001
 RUN adduser \
