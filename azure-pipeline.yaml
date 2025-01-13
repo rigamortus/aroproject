@@ -128,37 +128,79 @@ stages:
             find images/**/ -name Dockerfile > dockerfiles.txt
           displayName: 'Find all Dockerfiles'
 
-        - script: |
-            dockerfiles=()
-            i=0
+        - bash: |
             while IFS= read -r dockerfile; do
-              dockerfiles+=($dockerfile)
-              echo "##vso[task.setvariable variable=dockerfile_$i]$dockerfile"
-              imageName=$(basename $(dirname $dockerfile))
-              echo "##vso[task.setvariable variable=imageName_$i]$imageName"
-              i=$((i + 1))
-            done < dockerfiles.txt
-            echo "##vso[task.setvariable variable=totalDockerfiles]$i"
-          displayName: 'Process Dockerfiles'
-        
-        - ${{ each i in variables['totalDockerfiles'] }}:
-          - task: Docker@2
-            displayName: "Build Docker image ${{ format('imageName_{0}', i) }}"
-            inputs:
-              containerRegistry: 'docker'
-              repository: "docker.io/rigamortus/${{ format('imageName_{0}', i) }}"
-              command: 'build'
-              Dockerfile: "${{ format('dockerfile_{0}', i) }}"
-              tags: '$(tag)'
+              imageName=$(basename $(dirname "$dockerfile"))
+              echo "##vso[task.setvariable variable=currentImageName]$imageName"
+              echo "##vso[task.setvariable variable=currentDockerfile]$dockerfile"
+              
+              # Run Docker@2 and Snyk tasks for this image
+              echo "##[command]Building $dockerfile..."
+              
+              # Build Docker image
+              docker build -t "rigamortus/$imageName:$(Build.BuildId)" -f "$dockerfile" .
 
-          - task: SnykSecurityScan@1
-            displayName: "Snyk scan for ${{ format('imageName_{0}', i) }}"
-            inputs:
-              serviceConnectionEndpoint: 'snyk'
-              testType: 'container'
-              dockerImageName: "docker.io/rigamortus/${{ format('imageName_{0}', i) }}:$(tag)"
-              severityThreshold: 'medium'
-              monitorWhen: 'always'
-              failOnIssues: true
-              projectName: "rigamortus"
-              organization: 'ARO-PROJECT'
+              # Run Snyk scan for this image
+              echo "##[command]Running Snyk scan for $imageName..."
+              
+              snyk container test "rigamortus/$imageName:$(Build.BuildId)" \
+                --severity-threshold=medium
+            done < dockerfiles.txt
+          displayName: 'Process Images'
+
+        # - script: |
+        #     dockerfiles=()
+        #     while IFS= read -r dockerfile; do
+        #       dockerfiles+=($dockerfile)
+        #     done < dockerfiles.txt
+        #     echo "##vso[task.setvariable variable=dockerfiles;isOutput=true]${dockerfiles[@]}"
+        #   displayName: 'Set dockerfiles variable'
+        
+        # - ${{ each i in range(0, variables.totalDockerfiles) }}:
+        #   - task: Docker@2
+        #     displayName: "Build Docker image ${{ variables['imageName_' + format('{0}', i)] }}"
+        #     inputs:
+        #       containerRegistry: 'docker'
+        #       repository: "docker.io/rigamortus/${{ variables['imageName_' + format('{0}', i)] }}"
+        #       command: 'build'
+        #       Dockerfile: "${{ variables['dockerfile_' + format('{0}', i)] }}"
+        #       tags: '$(tag)'
+
+        #   - task: SnykSecurityScan@1
+        #     displayName: "Snyk scan for ${{ variables['imageName_' + format('{0}', i)] }}"
+        #     inputs:
+        #       serviceConnectionEndpoint: 'snyk'
+        #       testType: 'container'
+        #       dockerImageName: "docker.io/rigamortus/${{ variables['imageName_' + format('{0}', i)] }}:$(tag)"
+        #       severityThreshold: 'medium'
+        #       monitorWhen: 'always'
+        #       failOnIssues: true
+        #       projectName: "rigamortus-${{ variables['imageName_' + format('{0}', i)] }}"
+        #       organization: 'ARO-PROJECT'
+
+        # - ${{ each dockerfile in parameters.dockerfiles }}:
+        #   - script: |
+        #         imageName=$(basename $(dirname ${{ dockerfile }}))
+        #         echo "##vso[task.setvariable variable=imageName;isOutput=true]$imageName"
+        #     displayName: 'Set imageName variable'
+
+        #   - task: Docker@2
+        #     displayName: 'Build and push Docker image ${{ dockerfile }}'
+        #     inputs:
+        #       containerRegistry: '$(dockerRegistryServiceConnection)'
+        #       repository: '$(imageRepository)/${{ imageName }}'
+        #       command: 'build'
+        #       Dockerfile: '${{ dockerfile }}'
+        #       tags: |
+        #         $(tag)
+        #   - task: SnykSecurityScan@1
+        #     displayName: 'Snyk scan for ${{ imageName }}'
+        #     inputs:
+        #       serviceConnectionEndpoint: 'snyk'
+        #       testType: 'container'
+        #       severityThreshold: 'medium'
+        #       monitorWhen: 'always'
+        #       failOnIssues: true
+        #       projectName: 'rigamortus-${{ imageName }}'
+        #       organization: 'ARO-PROJECT'
+        #       dockerImageName: '$(imageRepository)/${{ imageName }}:$(tag)'
