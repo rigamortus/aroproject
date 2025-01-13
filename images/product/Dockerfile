@@ -1,5 +1,5 @@
 ARG RUST_VERSION=1.80.0
-ARG DEBIAN_VERSION=bookworm-slim
+ARG DEBIAN_VERSION=oldstable-slim
 
 FROM rust:${RUST_VERSION} AS builder
 
