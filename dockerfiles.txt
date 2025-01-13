@@ -1,0 +1,8 @@
+images/aiservice/Dockerfile
+images/customer/Dockerfile
+images/makeline/Dockerfile
+images/order-service/Dockerfile
+images/product/Dockerfile
+images/store-admin/Dockerfile
+images/store-front/Dockerfile
+images/worker/Dockerfile
